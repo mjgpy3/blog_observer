@@ -39,6 +39,16 @@ describe BlogObserver do
               subject
             end
           end
+
+          context 'when there are no updates' do
+            let(:updates) { double('Updates', :empty? => true) }
+            before(:each) { allow(update_analyzer).to receive(:updates).and_return(updates) }
+
+            it 'does not email the updates' do
+              expect(email_sender).to_not receive(:send_updates).with(updates)
+              subject
+            end
+          end
         end
       end
     end

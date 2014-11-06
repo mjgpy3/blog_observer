@@ -6,6 +6,8 @@ class BlogObserver
   end
 
   def observe
-    @emailer.send_updates(@analyzer.updates(@config.blogs))
+    ->(updates) {
+      @emailer.send_updates(updates) unless updates.empty?
+    }.(@analyzer.updates(@config.blogs))
   end
 end
