@@ -7,7 +7,13 @@ class ConfigurationReader
   end
 
   def blogs
-    YAML.load_file(@path)
+    config[:blogs]
+  end
+
+  private
+
+  def config
+    @config ||= YAML.load_file(@path)
   end
 
 end

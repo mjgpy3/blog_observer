@@ -11,8 +11,17 @@ describe ConfigurationReader do
       let(:path) { 'some/path/to/config.yml' }
 
       it 'loads the path as YAML' do
-        expect(YAML).to receive(:load_file).with(path)
+        expect(YAML).to receive(:load_file).with(path).and_return(double.as_null_object)
         subject
+      end
+
+      context 'when the read YAML has a blog section' do
+        let(:blogs) { double('Blogs') }
+        before(:each) { allow(YAML).to receive(:load_file).and_return(blogs: blogs) }
+
+        it 'returns the blogs section of the YAML' do
+          expect(subject).to eq(blogs)
+        end
       end
     end
   end
