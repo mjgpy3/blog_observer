@@ -15,12 +15,27 @@ class UpdateAnalyzer
   private
 
   def name_to_deltas(details)
-    blog = retrieve(details)
-    deltas = @artifacts.deltas(blog)
-    deltas.empty? ? {} : { details['name'] => { deltas: @artifacts.deltas(blog) } }
+    title_list = retrieve_title_list(details)
+    deltas = @artifacts.deltas(title_list)
+    link = retrieve_link(details)
+    deltas.empty? ? {} : {
+      details['name'] => {
+        deltas: @artifacts.deltas(title_list),
+        link: link.first
+      }
+    }
   end
 
-  def retrieve(details)
+  def retrieve_link(details)
+    @retriever.retrieve(
+      OpenStruct.new(
+        link: details['link'],
+        xpath: details['link_xpath']
+      )
+    )
+  end
+
+  def retrieve_title_list(details)
     @retriever.retrieve(
       OpenStruct.new(
         link: details['link'],
