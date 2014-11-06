@@ -1,9 +1,10 @@
 class BlogObserver
   def initialize(params)
     @config = params[:config]
+    @analyzer = params[:update_analyzer]
   end
 
   def observe
-    @config.blogs
+    @analyzer.updates(@config.blogs)
   end
 end
