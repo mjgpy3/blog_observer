@@ -1,19 +1,19 @@
 require 'spec_helper'
-require './lib/blog_retriever.rb'
+require './lib/xpath_retriever.rb'
 
-describe BlogRetriever do
-  let(:blog_retriever) { BlogRetriever.new }
+describe XPathRetriever do
+  let(:xpath_retriever) { XPathRetriever.new }
 
   describe '#retrieve' do
-    subject { blog_retriever.retrieve(blog_details) }
+    subject { xpath_retriever.retrieve(details) }
 
-    context 'when provided blog details' do
-      let(:blog_details) { { 'link' => 'foo.bar.foo', 'title_xpath' => 'some xpath' } }
+    context 'when provided details' do
+      let(:details) { double('Details', link: 'foo.bar.foo', xpath: 'some xpath') }
       before(:each) { allow(Net::HTTP).to receive(:get).and_return(double.as_null_object) }
       before(:each) { allow(Nokogiri).to receive(:XML).and_return(double.as_null_object) }
 
       it "gets the blog's HTML by its link" do
-        expect(Net::HTTP).to receive(:get).with(blog_details['link'])
+        expect(Net::HTTP).to receive(:get).with(details.link)
         subject
       end
 
@@ -31,7 +31,7 @@ describe BlogRetriever do
           before(:each) { allow(Nokogiri).to receive(:XML).and_return(nokogiri_document) }
 
           it "gets the blog's xpath applied to it" do
-            expect(nokogiri_document).to receive(:xpath).with(blog_details['title_xpath'])
+            expect(nokogiri_document).to receive(:xpath).with(details.xpath)
             subject
           end
         end

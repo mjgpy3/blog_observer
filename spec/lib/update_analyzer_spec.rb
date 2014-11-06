@@ -12,20 +12,19 @@ describe UpdateAnalyzer do
       let(:params) { { config: configuration_reader } }
 
       context 'with blog details' do
-        let(:blog_details1) { double('Blog1 Details') }
-        let(:blog_details2) { double('Blog2 Details') }
+        let(:blog_details1) { { 'link' => 'bee', 'title_xpath' => '/a/z/d', 'name' => 'blog1 title' } }
+        let(:blog_details2) { { 'link' => 'cee', 'title_xpath' => '/e/f/', 'name' => 'blog2 title' } }
 
         context 'and provided an ArtifactStore' do
           let(:artifact_store) { double('ArtifactStore').as_null_object }
           before(:each) { params[:artifacts] = artifact_store }
 
           context 'and provided a BlogRetriever' do
-            let(:blog_retriever) { double('BlogRetriever') }
-            before(:each) { params[:retriever] = blog_retriever }
+            let(:xpath_retriever) { double('BlogRetriever') }
+            before(:each) { params[:retriever] = xpath_retriever }
 
             it 'retrieves each blog' do
-              expect(blog_retriever).to receive(:retrieve).with(blog_details1).and_return(double.as_null_object)
-              expect(blog_retriever).to receive(:retrieve).with(blog_details2).and_return(double.as_null_object)
+              expect(xpath_retriever).to receive(:retrieve).with(duck_type(:xpath, :link)).and_return(double.as_null_object).twice
               subject
             end
 
@@ -33,10 +32,7 @@ describe UpdateAnalyzer do
               let(:blog1) { double('Blog1') }
               let(:blog2) { double('Blog2') }
               before(:each) do
-                allow(blog1).to receive(:[]).with('name').and_return('blog1 title')
-                allow(blog2).to receive(:[]).with('name').and_return('blog2 title')
-                allow(blog_retriever).to receive(:retrieve).with(blog_details1).and_return(blog1)
-                allow(blog_retriever).to receive(:retrieve).with(blog_details2).and_return(blog2)
+                allow(xpath_retriever).to receive(:retrieve).and_return(blog1, blog2)
               end
 
               it 'calculates deltas between each blog and the ArtifactStore' do
@@ -66,7 +62,7 @@ describe UpdateAnalyzer do
 
                 it 'returns a hash of the blogs titles mapped to their deltas' do
                   expect(subject).
-                    to eq('blog1 title' => [delta1, delta2], 'blog2 title' => [delta3, delta4, delta5])
+                    to eq('blog1 title' => { deltas: [delta1, delta2] }, 'blog2 title' => { deltas: [delta3, delta4, delta5] })
                 end
               end
             end

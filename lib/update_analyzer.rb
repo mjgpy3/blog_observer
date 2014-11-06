@@ -1,3 +1,5 @@
+require 'ostruct'
+
 class UpdateAnalyzer
   def initialize(params)
     @retriever, @artifacts = params.values_at(:retriever, :artifacts)
@@ -15,10 +17,15 @@ class UpdateAnalyzer
   def name_to_deltas(details)
     blog = retrieve(details)
     deltas = @artifacts.deltas(blog)
-    deltas.empty? ? {} : { blog['name'] => @artifacts.deltas(blog) }
+    deltas.empty? ? {} : { details['name'] => { deltas: @artifacts.deltas(blog) } }
   end
 
   def retrieve(details)
-    @retriever.retrieve(details)
+    @retriever.retrieve(
+      OpenStruct.new(
+        link: details['link'],
+        xpath: details['title_xpath']
+      )
+    )
   end
 end
