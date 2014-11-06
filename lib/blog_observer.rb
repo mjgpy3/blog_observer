@@ -1,6 +1,6 @@
 class BlogObserver
   def initialize(params)
-    @config, @analyzer, @emailer = params.values_at(:config, :update_analyzer, :email_sender)
+    @analyzer, @emailer = params.values_at(:update_analyzer, :email_sender)
   end
 
   def observe
@@ -10,6 +10,6 @@ class BlogObserver
   private
 
   def updates
-    @updates ||= @analyzer.updates(@config.blogs)
+    @updates ||= @analyzer.updates
   end
 end
