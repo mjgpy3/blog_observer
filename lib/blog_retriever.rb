@@ -6,6 +6,6 @@ require 'nokogiri'
 
 class BlogRetriever
   def retrieve(blog_details)
-    Net::HTTP.get(blog_details['link'])
+    Nokogiri::XML(Net::HTTP.get(blog_details['link']))
   end
 end
