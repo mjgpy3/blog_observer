@@ -12,8 +12,8 @@ describe XPathRetriever do
       before(:each) { allow(Net::HTTP).to receive(:get).and_return(double.as_null_object) }
       before(:each) { allow(Nokogiri).to receive(:XML).and_return(double.as_null_object) }
 
-      it "gets the blog's HTML by its link" do
-        expect(Net::HTTP).to receive(:get).with(details.link)
+      it "gets the blog's HTML by its URI-encoded link" do
+        expect(Net::HTTP).to receive(:get).with(URI.parse(details.link))
         subject
       end
 
@@ -31,8 +31,19 @@ describe XPathRetriever do
           before(:each) { allow(Nokogiri).to receive(:XML).and_return(nokogiri_document) }
 
           it "gets the blog's xpath applied to it" do
-            expect(nokogiri_document).to receive(:xpath).with(details.xpath)
+            expect(nokogiri_document).to receive(:xpath).with(details.xpath).and_return(double.as_null_object)
             subject
+          end
+
+          context 'after the xpath has been applied' do
+            let(:res1) { double('Result1') }
+            let(:res2) { double('Result2') }
+            let(:res3) { double('Result3') }
+            before(:each) { allow(nokogiri_document).to receive(:xpath).and_return([res1, res2, res3]) }
+
+            it 'returns each xpath result, converted to a string' do
+              expect(subject).to eq([res1.to_s, res2.to_s, res3.to_s])
+            end
           end
         end
       end

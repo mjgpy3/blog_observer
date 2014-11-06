@@ -8,6 +8,9 @@ class XPathRetriever
   end
 
   def retrieve(details)
-    @to_xml.(@get.(details.link)).xpath(details.xpath)
+    @to_xml.
+      (@get.(URI.parse(details.link))).
+      xpath(details.xpath).
+      map(&:to_s)
   end
 end
