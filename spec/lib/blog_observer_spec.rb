@@ -17,7 +17,7 @@ describe BlogObserver do
         before(:each) { params[:update_analyzer] = update_analyzer }
 
         context 'and an EmailSender' do
-          let(:email_sender) { double('EmailSender') }
+          let(:email_sender) { double('EmailSender').as_null_object }
           before(:each) { params[:email_sender] = email_sender  }
 
           it 'gets the desired blogs from the ConfigurationReader' do
@@ -28,6 +28,16 @@ describe BlogObserver do
           it 'gets updates from the UpdateAnalyzer using the configured blogs' do
             expect(update_analyzer).to receive(:updates).with(blogs)
             subject
+          end
+
+          context 'when there are updates' do
+            let(:updates) { double('Updates', :empty? => false) }
+            before(:each) { allow(update_analyzer).to receive(:updates).and_return(updates) }
+
+            it 'emails the updates' do
+              expect(email_sender).to receive(:send_updates).with(updates)
+              subject
+            end
           end
         end
       end
