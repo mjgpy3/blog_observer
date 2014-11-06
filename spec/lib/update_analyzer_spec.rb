@@ -30,9 +30,11 @@ describe UpdateAnalyzer do
             end
 
             context 'after the blogs have been retrieved' do
-              let(:blog1) { double('Blog1', name: 'blog1 title') }
-              let(:blog2) { double('Blog2', name: 'blog2 title') }
+              let(:blog1) { double('Blog1') }
+              let(:blog2) { double('Blog2') }
               before(:each) do
+                allow(blog1).to receive(:[]).with('name').and_return('blog1 title')
+                allow(blog2).to receive(:[]).with('name').and_return('blog2 title')
                 allow(blog_retriever).to receive(:retrieve).with(blog_details1).and_return(blog1)
                 allow(blog_retriever).to receive(:retrieve).with(blog_details2).and_return(blog2)
               end

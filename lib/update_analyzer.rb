@@ -15,7 +15,7 @@ class UpdateAnalyzer
   def name_to_deltas(details)
     blog = retrieve(details)
     deltas = @artifacts.deltas(blog)
-    deltas.empty? ? {} : { blog.name => @artifacts.deltas(blog) }
+    deltas.empty? ? {} : { blog['name'] => @artifacts.deltas(blog) }
   end
 
   def retrieve(details)
