@@ -6,7 +6,10 @@ class ArtifactStore
   def store_and_get_deltas(name_and_titles)
     known_titles_from(name_and_titles.name) do |known_titles|
       difference_of(name_and_titles.titles, known_titles) do |diff|
-        @db.save_titles(name_and_titles.titles) unless diff.empty?
+        @db.save_titles(
+          name_and_titles.name,
+          name_and_titles.titles
+        ) unless diff.empty?
       end
     end
   end

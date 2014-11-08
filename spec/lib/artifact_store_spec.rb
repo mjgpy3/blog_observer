@@ -5,7 +5,7 @@ shared_examples 'it saves the given titles' do
   specify do
     expect(database_client).
       to receive(:save_titles).
-      with(titles)
+      with('blogname', titles)
 
     subject
   end
