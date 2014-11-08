@@ -1,4 +1,5 @@
 RetrievalDetails = Struct.new(:link, :xpath)
+BlogNameAndTitles = Struct.new(:name, :titles)
 
 class UpdateAnalyzer
   def initialize(params)
@@ -16,7 +17,7 @@ class UpdateAnalyzer
 
   def name_to_deltas(details)
     title_list = retrieve_title_list(details)
-    deltas = @artifacts.store_and_get_deltas(title_list)
+    deltas = @artifacts.store_and_get_deltas(BlogNameAndTitles.new(details['name'], title_list))
     deltas.empty? ? {} : {
       details['name'] => {
         deltas: deltas,

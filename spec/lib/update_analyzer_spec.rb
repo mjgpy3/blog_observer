@@ -1,6 +1,32 @@
 require 'spec_helper'
 require './lib/update_analyzer.rb'
 
+shared_examples 'a databag where' do |method_to_expected_value|
+  method_to_expected_value.each do |method, expected_value|
+    describe "#{method}" do
+      specify { expect(subject.send(method)).to eq(expected_value) }
+    end
+  end
+end
+
+describe 'RetrievalDetails.new("foo", "bar")' do
+  subject { RetrievalDetails.new('foo', 'bar') }
+
+  it_behaves_like 'a databag where', {
+    'link' => 'foo',
+    'xpath' => 'bar'
+  }
+end
+
+describe 'BlogNameAndTitles.new("Some Blog", ["a", "b", "c"])' do
+  subject { BlogNameAndTitles.new('Some Blog', ["a", "b", "c"]) }
+
+  it_behaves_like 'a databag where', {
+    'name' => 'Some Blog',
+    'titles' => ["a", "b", "c"]
+  }
+end
+
 describe UpdateAnalyzer do
   let(:update_analyzer) { UpdateAnalyzer.new(params) }
 
@@ -36,8 +62,7 @@ describe UpdateAnalyzer do
               end
 
               it 'calculates deltas between each blog and the ArtifactStore' do
-                expect(artifact_store).to receive(:store_and_get_deltas).with(blog1_titles)
-                expect(artifact_store).to receive(:store_and_get_deltas).with(blog2_titles)
+                expect(artifact_store).to receive(:store_and_get_deltas).with(kind_of(BlogNameAndTitles)).twice
                 subject
               end
 
@@ -56,8 +81,7 @@ describe UpdateAnalyzer do
                 let(:delta4) { double('Delta4') }
                 let(:delta5) { double('Delta5') }
                 before(:each) do
-                  allow(artifact_store).to receive(:store_and_get_deltas).with(blog1_titles).and_return([delta1, delta2])
-                  allow(artifact_store).to receive(:store_and_get_deltas).with(blog2_titles).and_return([delta3, delta4, delta5])
+                  allow(artifact_store).to receive(:store_and_get_deltas).and_return([delta1, delta2], [delta3, delta4, delta5])
                 end
 
                 it 'returns a hash of the blogs titles mapped to their deltas' do
