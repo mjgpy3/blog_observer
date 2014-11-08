@@ -3,8 +3,7 @@ require 'nokogiri'
 
 class XPathRetriever
   def initialize(get = Net::HTTP.method(:get), to_xml = Nokogiri.method(:XML))
-    @get = get
-    @to_xml = to_xml
+    @get, @to_xml = get, to_xml
   end
 
   def retrieve(details)

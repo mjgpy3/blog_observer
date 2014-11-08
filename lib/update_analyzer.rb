@@ -16,10 +16,10 @@ class UpdateAnalyzer
 
   def name_to_deltas(details)
     title_list = retrieve_title_list(details)
-    deltas = @artifacts.deltas(title_list)
+    deltas = @artifacts.store_and_get_deltas(title_list)
     deltas.empty? ? {} : {
       details['name'] => {
-        deltas: @artifacts.deltas(title_list),
+        deltas: deltas,
       }
     }
   end
