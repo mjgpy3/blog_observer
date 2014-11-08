@@ -22,7 +22,7 @@ describe TitleStore do
 
       context 'and the titles collection exists' do
         let(:titles) { { 'titles' => ['1', '2'] } }
-        let(:collection) { double('TitlesCollection', find: titles) }
+        let(:collection) { double('TitlesCollection', find: [titles]) }
         before(:each) do
           allow(database).
             to receive(:[]).with('titles').
@@ -38,10 +38,14 @@ describe TitleStore do
             context 'and titles are given' do
               let(:titles) { double('titles') }
 
-              it 'updates the document where the blogname matches, with the new titles' do
+              it 'inserts the blogname and titles after deleting any matchers' do
                 expect(collection).
-                  to receive(:update).
-                  with({ blog_name: blog_name }, { blog_name: blog_name, titles: titles })
+                  to receive(:remove).
+                  with(blog_name: blog_name).ordered
+
+                expect(collection).
+                  to receive(:insert).
+                  with(blog_name: blog_name, titles: titles).ordered
                 subject
               end
             end
