@@ -16,13 +16,23 @@ class UpdateAnalyzer
   private
 
   def name_to_deltas(details)
-    title_list = retrieve_title_list(details)
-    deltas = @artifacts.store_and_get_deltas(BlogNameAndTitles.new(details['name'], title_list))
-    deltas.empty? ? {} : {
+    find_deltas_and_update_artifact_store!(details)
+    @deltas.empty? ? {} : {
       details['name'] => {
-        deltas: deltas,
+        deltas: @deltas,
       }
     }
+  end
+
+  private
+
+  def find_deltas_and_update_artifact_store!(details)
+    @deltas = @artifacts.store_and_get_deltas(
+      BlogNameAndTitles.new(
+        details['name'],
+        retrieve_title_list(details)
+      )
+    )
   end
 
   def retrieve_title_list(details)

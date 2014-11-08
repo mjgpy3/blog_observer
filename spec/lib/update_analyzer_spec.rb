@@ -13,17 +13,17 @@ describe 'RetrievalDetails.new("foo", "bar")' do
   subject { RetrievalDetails.new('foo', 'bar') }
 
   it_behaves_like 'a databag where', {
-    'link' => 'foo',
-    'xpath' => 'bar'
+    link: 'foo',
+    xpath: 'bar'
   }
 end
 
 describe 'BlogNameAndTitles.new("Some Blog", ["a", "b", "c"])' do
-  subject { BlogNameAndTitles.new('Some Blog', ["a", "b", "c"]) }
+  subject { BlogNameAndTitles.new('Some Blog', ['a', 'b', 'c']) }
 
   it_behaves_like 'a databag where', {
-    'name' => 'Some Blog',
-    'titles' => ["a", "b", "c"]
+    name: 'Some Blog',
+    titles: ['a', 'b', 'c']
   }
 end
 
