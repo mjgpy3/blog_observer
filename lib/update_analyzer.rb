@@ -1,4 +1,4 @@
-require 'ostruct'
+RetrievalDetails = Struct.new(:link, :xpath)
 
 class UpdateAnalyzer
   def initialize(params)
@@ -17,30 +17,16 @@ class UpdateAnalyzer
   def name_to_deltas(details)
     title_list = retrieve_title_list(details)
     deltas = @artifacts.deltas(title_list)
-    link = retrieve_link(details)
     deltas.empty? ? {} : {
       details['name'] => {
         deltas: @artifacts.deltas(title_list),
-        link: link.first
       }
     }
   end
 
-  def retrieve_link(details)
-    @retriever.retrieve(
-      OpenStruct.new(
-        link: details['link'],
-        xpath: details['link_xpath']
-      )
-    )
-  end
-
   def retrieve_title_list(details)
     @retriever.retrieve(
-      OpenStruct.new(
-        link: details['link'],
-        xpath: details['title_xpath']
-      )
+      RetrievalDetails.new(details.values_at('link', 'title_xpath'))
     )
   end
 end

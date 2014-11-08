@@ -24,7 +24,7 @@ describe UpdateAnalyzer do
             before(:each) { params[:retriever] = xpath_retriever }
 
             it 'retrieves each blog' do
-              expect(xpath_retriever).to receive(:retrieve).and_return(double.as_null_object).exactly(4).times
+              expect(xpath_retriever).to receive(:retrieve).and_return(double.as_null_object).with(kind_of(RetrievalDetails)).twice
               subject
             end
 
@@ -32,7 +32,7 @@ describe UpdateAnalyzer do
               let(:blog1) { double('Blog1') }
               let(:blog2) { double('Blog2') }
               before(:each) do
-                allow(xpath_retriever).to receive(:retrieve).and_return(blog1, ['some link1'], blog2, ['some link2'])
+                allow(xpath_retriever).to receive(:retrieve).and_return(blog1, blog2)
               end
 
               it 'calculates deltas between each blog and the ArtifactStore' do
@@ -62,7 +62,7 @@ describe UpdateAnalyzer do
 
                 it 'returns a hash of the blogs titles mapped to their deltas' do
                   expect(subject).
-                    to eq('blog1 title' => { link: 'some link1', deltas: [delta1, delta2] }, 'blog2 title' => { deltas: [delta3, delta4, delta5], link: 'some link2' })
+                    to eq('blog1 title' => { deltas: [delta1, delta2] }, 'blog2 title' => { deltas: [delta3, delta4, delta5] })
                 end
               end
             end
